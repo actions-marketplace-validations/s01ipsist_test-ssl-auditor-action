@@ -33,5 +33,5 @@ runs:
   main: 'dist/index.js'
 
 branding:
-  icon: 'check-shield'
+  icon: 'shield'
   color: 'blue'
