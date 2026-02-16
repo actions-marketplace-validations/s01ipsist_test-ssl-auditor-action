@@ -88,7 +88,6 @@ Create a `.testssl-rules.json` file in your repository to configure audit rules:
 {
   "rules": {
     "minTlsVersion": "1.2",
-    "allowedCiphers": [],
     "blockedCiphers": ["RC4", "DES", "3DES", "NULL", "EXPORT", "anon", "MD5"],
     "requireForwardSecrecy": true,
     "maxCertificateExpiry": 14,
@@ -100,7 +99,6 @@ Create a `.testssl-rules.json` file in your repository to configure audit rules:
 ### Available Rules
 
 - **minTlsVersion**: Minimum TLS version required (e.g., "1.2", "1.3"). The action checks if any insecure TLS versions are offered, including handling findings like "offered", "offered (deprecated)", "not offered", and "not offered + downgraded to weaker protocol".
-- **allowedCiphers**: List of explicitly allowed cipher patterns (empty = all allowed)
 - **blockedCiphers**: List of blocked cipher patterns that should not be offered (e.g., "RC4", "DES", "3DES")
 - **requireForwardSecrecy**: Require forward secrecy (PFS) support
 - **maxCertificateExpiry**: Maximum days until certificate expiry

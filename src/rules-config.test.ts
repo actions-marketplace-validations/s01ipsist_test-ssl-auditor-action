@@ -1,4 +1,4 @@
-import { loadRulesConfig, DEFAULT_RULES } from './rules-config';
+import { loadRulesConfig, validateRulesConfig, DEFAULT_RULES } from './rules-config';
 import { writeFile, unlink } from 'fs/promises';
 import { join } from 'path';
 
@@ -66,5 +66,51 @@ describe('loadRulesConfig', () => {
     expect(config.rules.requireForwardSecrecy).toBeUndefined();
     expect(config.rules.blockedCiphers).toBeUndefined();
     expect(config.rules.maxCertificateExpiry).toBeUndefined();
+  });
+
+  it('should reject invalid minGrade at load time', async () => {
+    const testConfig = { rules: { minGrade: 'X' } };
+    await writeFile(testConfigPath, JSON.stringify(testConfig));
+    await expect(loadRulesConfig(testConfigPath)).rejects.toThrow('Invalid minGrade "X"');
+  });
+
+  it('should reject invalid minTlsVersion at load time', async () => {
+    const testConfig = { rules: { minTlsVersion: 'abc' } };
+    await writeFile(testConfigPath, JSON.stringify(testConfig));
+    await expect(loadRulesConfig(testConfigPath)).rejects.toThrow('Invalid minTlsVersion "abc"');
+  });
+
+  it('should reject negative maxCertificateExpiry at load time', async () => {
+    const testConfig = { rules: { maxCertificateExpiry: -5 } };
+    await writeFile(testConfigPath, JSON.stringify(testConfig));
+    await expect(loadRulesConfig(testConfigPath)).rejects.toThrow('Invalid maxCertificateExpiry');
+  });
+});
+
+describe('validateRulesConfig', () => {
+  it('should accept all valid grades', () => {
+    const validGrades = ['A+', 'A', 'A-', 'B', 'C', 'D', 'E', 'F', 'T'];
+    for (const grade of validGrades) {
+      expect(() => validateRulesConfig({ rules: { minGrade: grade } })).not.toThrow();
+    }
+  });
+
+  it('should accept valid TLS versions', () => {
+    expect(() => validateRulesConfig({ rules: { minTlsVersion: '1.2' } })).not.toThrow();
+    expect(() => validateRulesConfig({ rules: { minTlsVersion: '1.3' } })).not.toThrow();
+  });
+
+  it('should reject TLS versions without dot notation', () => {
+    expect(() => validateRulesConfig({ rules: { minTlsVersion: '12' } })).toThrow(
+      'Invalid minTlsVersion'
+    );
+  });
+
+  it('should accept zero maxCertificateExpiry', () => {
+    expect(() => validateRulesConfig({ rules: { maxCertificateExpiry: 0 } })).not.toThrow();
+  });
+
+  it('should accept config with no rules set', () => {
+    expect(() => validateRulesConfig({ rules: {} })).not.toThrow();
   });
 });

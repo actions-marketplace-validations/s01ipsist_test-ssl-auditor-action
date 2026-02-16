@@ -1,7 +1,6 @@
 {
   "rules": {
     "minTlsVersion": "1.2",
-    "allowedCiphers": [],
     "blockedCiphers": [
       "RC4",
       "DES",
