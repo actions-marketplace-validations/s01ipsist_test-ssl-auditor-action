@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v6.0.2
 
       - name: Test SSL/TLS for expired certificate endpoint
         uses: s01ipsist/test-ssl-action@v1
@@ -61,7 +61,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v6.0.2
 
       - name: Test SSL/TLS for endpoint with lower grade
         uses: s01ipsist/test-ssl-action@v1
